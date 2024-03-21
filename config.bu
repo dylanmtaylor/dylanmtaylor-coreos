@@ -24,8 +24,9 @@ storage:
           rpm-ostree rebase ostree-unverified-registry:ghcr.io/ublue-os/ucore-hci:stable-zfs \
             && touch /etc/ucore-autorebase/.complete \
             && systemctl disable ucore-autorebase.service \
-            && systemctl enable dylanmtaylor-setup.service \
-            && systemctl reboot
+            && systemctl enable dylanmtaylor-setup.service
+          sleep 15 # Allow manual intervention
+          systemctl reboot
       mode: 0754
     - path: /etc/dylanmtaylor/setup.sh
       contents:
@@ -60,7 +61,7 @@ storage:
             && rpm-ostree install unzip vim htop lshw neofetch nmap rclone restic texlive-xetex texlive-collection-fontsrecommended texlive-collection-fontutils \
             && systemctl enable refresh-content.timer \
             && touch /etc/dylanmtaylor/.complete
-          sleep 30 # Allow manual intervention
+          sleep 15 # Allow manual intervention
           systemctl reboot
       mode: 0754
     - path: /etc/dylanmtaylor/refresh-content.sh
