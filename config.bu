@@ -38,8 +38,23 @@ storage:
           curl -SL https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
           chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
           echo "Setting up dylanmtaylor websites ..."
+          mkdir -p /etc/dylan-resume-source
+          chmod 0755 /etc/dylan-resume-source
+          mkdir -p /var/www/dylanmtaylor.com/html
+          chmod 0755 /var/www/dylanmtaylor.com/html
+          mkdir -p /var/www/files.dylanmtaylor.com/html
+          chmod 0755 /var/www/files.dylanmtaylor.com/html
+          mkdir -p /var/www/errors
+          chmod 0755 /var/www/errors
+          curl -o /var/www/errors/404.html https://raw.githubusercontent.com/dylanmtaylor/dylanmtaylor-coreos/main/nginx/404.html
+          mkdir -p /etc/nginx/sites-available
+          chmod 0775 /etc/nginx/sites-available
+          mkdir -p /etc/nginx/sites-enabled
+          chmod 0755 /etc/nginx/sites-enabled
+          curl -o /etc/nginx/sites-available/dylanmtaylor.com.conf https://raw.githubusercontent.com/dylanmtaylor/dylanmtaylor-coreos/main/nginx/sites/dylanmtaylor.com.conf
+          curl -o /etc/nginx/sites-available/files.dylanmtaylor.com.conf https://raw.githubusercontent.com/dylanmtaylor/dylanmtaylor-coreos/main/nginx/sites/files.dylanmtaylor.com.conf
+          find /etc/nginx/sites-available/ -name '*.conf' -type f -exec ln -s {} /etc/nginx/sites-enabled/ \;
           systemctl enable --now docker
-
           docker compose -f /etc/dylanmtaylor/docker-compose.yml up
           touch /etc/dylanmtaylor/.complete
       mode: 0754
@@ -121,7 +136,7 @@ storage:
               stdin_open: true
               tty: true
               volumes:
-                - /root/Dylan-Resume:/source
+                - /etc/dylan-resume-source:/source
                 - /var/www/files.dylanmtaylor.com/html:/destination
 
             nginx-proxy:
