@@ -31,6 +31,8 @@ storage:
       contents:
         inline: |
           #!/usr/bin/bash
+          echo "Performing system customization in 5 seconds ..."
+          sleep 5
           echo "Installing docker compose plugin"
           mkdir -p /usr/local/lib/docker/cli-plugins
           curl -SL https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
@@ -221,7 +223,7 @@ systemd:
         [Unit]
         Description=Refresh site content
         [Timer]
-        OnUnitActiveSec=15m
+        OnUnitActiveSec=5m
         OnBootSec=1m
         Persistent=true
         [Install]
