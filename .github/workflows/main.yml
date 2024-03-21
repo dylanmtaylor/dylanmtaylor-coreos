@@ -10,4 +10,9 @@ jobs:
         with:
           sparse-checkout: .
       - name: Generate ignition file
-        run: docker run --interactive --rm quay.io/coreos/butane:release --pretty --strict < ${GITHUB_WORKSPACE}/config.bu
+        run: docker run --interactive --rm quay.io/coreos/butane:release --pretty --strict < ${GITHUB_WORKSPACE}/config.bu > config.ign
+      - name: Output ignition file
+        run: cat config.ign
+      - name: Validate ignition file
+        run: docker run --pull=always --rm -i quay.io/coreos/ignition-validate:release - < config.ign
+
