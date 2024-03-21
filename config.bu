@@ -1,0 +1,163 @@
+variant: fcos
+version: 1.4.0
+passwd:
+  users:
+    - name: dylan
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF0rSUil4ks6LmTGDCZ43xg7kBV82lo+cgPY1lepvGZc Dylan M. Taylor
+      password_hash: $y$j9T$2hKRY3QJzIYgHb1G9p/FG1$2guy6HqSiWzKafGp8tlftiB5cc0GLn8e8kbArddUxa7
+      groups:
+        - wheel
+    - name: core
+      ssh_authorized_keys:
+        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF0rSUil4ks6LmTGDCZ43xg7kBV82lo+cgPY1lepvGZc Dylan M. Taylor
+      password_hash: $y$j9T$2hKRY3QJzIYgHb1G9p/FG1$2guy6HqSiWzKafGp8tlftiB5cc0GLn8e8kbArddUxa7
+storage:
+  directories:
+    - path: /etc/ucore-autorebase
+      mode: 0754
+  files:
+    - path: /etc/ucore-autorebase/ucore-autorebase.sh
+      contents:
+        inline: |
+          #!/usr/bin/bash
+          echo "Rebasing to uCore OCI in 5 seconds"
+          sleep 5
+          rpm-ostree rebase ostree-unverified-registry:ghcr.io/ublue-os/ucore-hci:stable-zfs \
+            && touch /etc/ucore-autorebase/.complete \
+            && systemctl disable ucore-autorebase.service \
+            && systemctl enable dylanmtaylor-setup.service \
+            && systemctl reboot
+      mode: 0754
+    - path: /etc/dylanmtaylor/setup.sh
+      contents:
+        inline: |
+          #!/usr/bin/bash
+          echo "Setting up dylanmtaylor websites ..."
+          touch /etc/dylanmtaylor/.complete
+      mode: 0754
+    - path: /etc/dylanmtaylor/docker-compose.yml
+      contents:
+        inline: |
+          version: '3.8'
+
+          services:
+            www-dylanmtaylor-com:
+              image: richarvey/nginx-php-fpm:1.10.3
+              container_name: www-dylanmtaylor-com
+              restart: always
+              environment:
+                VIRTUAL_HOST: 'www.dylanmtaylor.com,dylanmtaylor.com,dylanmtaylor.local,localhost'
+              volumes:
+                - /var/www/files.dylanmtaylor.com/html/:/var/www/files.dylanmtaylor.com/html/:ro
+                - /var/www/dylanmtaylor.com/html/public/:/var/www/html/:ro
+                - /var/www/errors/404.html:/var/www/errors/404.html:ro
+
+            apps-dylanmtaylor-com:
+              image: richarvey/nginx-php-fpm:1.10.3
+              container_name: apps-dylanmtaylor-com
+              restart: always
+              environment:
+                GIT_NAME: "Dylan M. Taylor"
+                GIT_EMAIL: "dylan@dylanmtaylor.com"
+                GIT_REPO: https://gitlab.com/dylanmtaylor/apps-dylanmtaylor-com.git
+                VIRTUAL_HOST: 'apps.dylanmtaylor.com,apps.dylanmtaylor.local'
+              volumes:
+                - /var/www/errors/404.html:/var/www/errors/404.html:ro
+
+            fwc-dylanmtaylor-com:
+              image: richarvey/nginx-php-fpm:1.10.3
+              container_name: fwc-dylanmtaylor-com
+              restart: always
+              environment:
+                GIT_NAME: "Dylan M. Taylor"
+                GIT_EMAIL: "dylan@dylanmtaylor.com"
+                GIT_REPO: https://gitlab.com/dylanmtaylor/fwc-dylanmtaylor-com.git
+                VIRTUAL_HOST: 'fwc.dylanmtaylor.com,fwc.dylanmtaylor.local'
+              volumes:
+                - /var/www/errors/404.html:/var/www/errors/404.html:ro
+
+            files-dylanmtaylor-com:
+              image: nginx:alpine
+              container_name: files-dylanmtaylor-com
+              restart: always
+              environment:
+                VIRTUAL_HOST: 'files.dylanmtaylor.com,files.dylanmtaylor.local'
+              volumes:
+                - /var/www/files.dylanmtaylor.com/html/:/usr/share/nginx/html:ro
+
+            git-dylanmtaylor-com:
+              image: ajoergensen/web-redirect:latest
+              container_name: git-dylanmtaylor-com
+              restart: always
+              environment:
+                VIRTUAL_HOST: 'git.dylanmtaylor.com,git.dylanmtaylor.local'
+                REDIRECT_SCHEME: 'https'
+                REDIRECT_TARGET: 'gitlab.com'
+                REDIRECT_PATH: '/dylanmtaylor'
+
+            blog-dylanmtaylor-com:
+              image: ajoergensen/web-redirect:latest
+              container_name: blog-dylanmtaylor-com
+              restart: always
+              environment:
+                VIRTUAL_HOST: 'blog.dylanmtaylor.com,blog.dylanmtaylor.local'
+                REDIRECT_SCHEME: 'https'
+                REDIRECT_TARGET: 'dylanmtaylor.com'
+                REDIRECT_PATH: '/blog'
+
+            resume-builder:
+              image: ubuntu:latest
+              container_name: resume-builder
+              restart: always
+              stdin_open: true
+              tty: true
+              volumes:
+                - /root/Dylan-Resume:/source
+                - /var/www/files.dylanmtaylor.com/html:/destination
+
+            nginx-proxy:
+              image: jwilder/nginx-proxy:alpine
+              container_name: nginx-proxy
+              restart: always
+              ports:
+                - "80:80"
+              environment:
+                DEFAULT_HOST: 'dylanmtaylor.com'
+              volumes:
+                - /var/run/docker.sock:/tmp/docker.sock:ro
+                mode: 0754
+systemd:
+  units:
+    - name: ucore-autorebase.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=uCore autorebase to OCI and reboot
+        ConditionPathExists=!/etc/ucore-autorebase/.complete
+        ConditionFileIsExecutable=/etc/ucore-autorebase/ucore-autorebase.sh
+        After=network-online.target
+        Wants=network-online.target
+        [Service]
+        Type=oneshot
+        StandardOutput=journal+console
+        RemainAfterExit=yes
+        ExecStart=/etc/ucore-autorebase/ucore-autorebase.sh
+        [Install]
+        WantedBy=multi-user.target
+    - name: dylanmtaylor-setup.service
+      enabled: false
+      contents: |
+        [Unit]
+        Description=dylanmtaylor setup
+        ConditionPathExists=!/etc/dylanmtaylor/.complete
+        ConditionFileIsExecutable=/etc/dylanmtaylor/setup.sh
+        After=network-online.target
+        Wants=network-online.target
+        [Service]
+        Type=oneshot
+        StandardOutput=journal+console
+        RemainAfterExit=yes
+        ExecStart=/etc/dylanmtaylor/setup.sh
+        [Install]
+        WantedBy=multi-user.target
