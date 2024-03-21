@@ -33,36 +33,33 @@ storage:
           #!/usr/bin/bash
           echo "Performing system customization in 5 seconds ..."
           sleep 5
-          echo "Installing docker compose plugin"
-          mkdir -p /usr/local/lib/docker/cli-plugins
-          curl -SL https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
-          chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
-          echo "Setting up dylanmtaylor websites ..."
-          # Nginx structure
-          mkdir -p /etc/dylanmtaylor/resume
-          chmod 0755 /etc/dylanmtaylor/resume
-          mkdir -p /var/www/dylanmtaylor.com/html
-          chmod 0755 /var/www/dylanmtaylor.com/html
-          mkdir -p /var/www/files.dylanmtaylor.com/html
-          chmod 0755 /var/www/files.dylanmtaylor.com/html
-          mkdir -p /var/www/errors
-          chmod 0755 /var/www/errors
-          curl -o /var/www/errors/404.html https://raw.githubusercontent.com/dylanmtaylor/dylanmtaylor-coreos/main/nginx/404.html
-          mkdir -p /etc/nginx/sites-available
-          chmod 0775 /etc/nginx/sites-available
-          mkdir -p /etc/nginx/sites-enabled
-          chmod 0755 /etc/nginx/sites-enabled
-          curl -o /etc/nginx/sites-available/dylanmtaylor.com.conf https://raw.githubusercontent.com/dylanmtaylor/dylanmtaylor-coreos/main/nginx/sites/dylanmtaylor.com.conf
-          curl -o /etc/nginx/sites-available/files.dylanmtaylor.com.conf https://raw.githubusercontent.com/dylanmtaylor/dylanmtaylor-coreos/main/nginx/sites/files.dylanmtaylor.com.conf
-          find /etc/nginx/sites-available/ -name '*.conf' -type f -exec ln -s {} /etc/nginx/sites-enabled/ \;
-          # Containers
-          systemctl enable --now docker
-          docker compose -f /etc/dylanmtaylor/docker-compose.yml up --detach
-          systemctl enable --now cockpit.service
-          setsebool -P rsync_full_access 1
-          rpm-ostree install unzip vim htop lshw neofetch nmap rclone restic texlive-xetex texlive-collection-fontsrecommended texlive-collection-fontutils
-          systemctl enable refresh-content.timer
-          touch /etc/dylanmtaylor/.complete
+          echo "Installing docker compose plugin and setting up containers"
+            && mkdir -p /usr/local/lib/docker/cli-plugins \
+            && curl -SL https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose \
+            && chmod +x /usr/local/lib/docker/cli-plugins/docker-compose \
+            && mkdir -p /etc/dylanmtaylor/resume \
+            && chmod 0755 /etc/dylanmtaylor/resume \
+            && mkdir -p /var/www/dylanmtaylor.com/html \
+            && chmod 0755 /var/www/dylanmtaylor.com/html \
+            && mkdir -p /var/www/files.dylanmtaylor.com/html \
+            && chmod 0755 /var/www/files.dylanmtaylor.com/html \
+            && mkdir -p /var/www/errors \
+            && chmod 0755 /var/www/errors \
+            && curl -o /var/www/errors/404.html https://raw.githubusercontent.com/dylanmtaylor/dylanmtaylor-coreos/main/nginx/404.html \
+            && mkdir -p /etc/nginx/sites-available \
+            && chmod 0775 /etc/nginx/sites-available \
+            && mkdir -p /etc/nginx/sites-enabled \
+            && chmod 0755 /etc/nginx/sites-enabled \
+            && curl -Lo /etc/nginx/sites-available/dylanmtaylor.com.conf https://raw.githubusercontent.com/dylanmtaylor/dylanmtaylor-coreos/main/nginx/sites/dylanmtaylor.com.conf \
+            && curl -Lo /etc/nginx/sites-available/files.dylanmtaylor.com.conf https://raw.githubusercontent.com/dylanmtaylor/dylanmtaylor-coreos/main/nginx/sites/files.dylanmtaylor.com.conf \
+            && find /etc/nginx/sites-available/ -name '*.conf' -type f -exec ln -s {} /etc/nginx/sites-enabled/ \; \
+            && systemctl enable --now docker \
+            && docker compose -f /etc/dylanmtaylor/docker-compose.yml up --detach \
+            && systemctl enable --now cockpit.service \
+            && setsebool -P rsync_full_access 1 \
+            && rpm-ostree install unzip vim htop lshw neofetch nmap rclone restic texlive-xetex texlive-collection-fontsrecommended texlive-collection-fontutils \
+            && systemctl enable refresh-content.timer \
+            && touch /etc/dylanmtaylor/.complete
           systemctl reboot
       mode: 0754
     - path: /etc/dylanmtaylor/refresh-content.sh
