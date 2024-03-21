@@ -85,8 +85,8 @@ storage:
           docker exec -it apps-dylanmtaylor-com /usr/bin/git pull
           rm -rf /etc/dylanmtaylor/resume
           git clone https://gitlab.com/dylanmtaylor/Dylan-Resume.git /etc/dylanmtaylor/resume && cd /etc/dylanmtaylor/resume && git checkout HEAD && git pull origin HEAD
-          cd /etc/dylanmtaylor/resume
-          docker run -v /etc/dylanmtaylor/resume/:/source:z -v /var/www/files.dylanmtaylor.com/html/:/destination:z -it ubuntu:22.04 bash -c "apt-get update && apt-get install -y texlive-xetex texlive-fonts-recommended texlive-font-utils && xelatex --output-directory=/destination /source/dylan-resume.tex"
+          docker build /etc/dylanmtaylor/ -t resume-builder:latest -f /etc/dylanmtaylor/dylan-resume-builder-dockerfile
+          docker run -v /etc/dylanmtaylor/resume/:/source:z -v /var/www/files.dylanmtaylor.com/html/:/destination:z -it resume-builder:latest
           ls -lah /var/www/files.dylanmtaylor.com/html
       mode: 0754
     - path: /etc/dylanmtaylor/docker-compose.yml
