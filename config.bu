@@ -18,6 +18,7 @@ storage:
       contents:
         inline: |
           #!/usr/bin/bash
+          hostnamectl hostname dylanmtaylor.com
           echo "Rebasing to uCore OCI in 5 seconds"
           sleep 5
           rpm-ostree rebase ostree-unverified-registry:ghcr.io/ublue-os/ucore-hci:stable-zfs \
@@ -30,7 +31,6 @@ storage:
       contents:
         inline: |
           #!/usr/bin/bash
-          hostnamectl hostname dylanmtaylor.com
           echo "Installing docker compose plugin"
           mkdir -p /usr/local/lib/docker/cli-plugins
           curl -SL https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
@@ -57,7 +57,7 @@ storage:
           systemctl enable --now docker
           docker compose -f /etc/dylanmtaylor/docker-compose.yml up --detach
           systemctl enable --now cockpit.service
-          rpm-ostree install unzip vim htop lshw neofetch nmap
+          rpm-ostree install unzip vim htop lshw neofetch nmap rclone restic
           systemctl enable refresh-content.timer
           touch /etc/dylanmtaylor/.complete
           systemctl reboot
