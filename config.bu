@@ -60,7 +60,8 @@ storage:
             && rpm-ostree install unzip vim htop lshw neofetch nmap rclone restic texlive-xetex texlive-collection-fontsrecommended texlive-collection-fontutils \
             && systemctl enable refresh-content.timer \
             && touch /etc/dylanmtaylor/.complete
-            && systemctl reboot
+          sleep 30 # Allow manual intervention
+          systemctl reboot
       mode: 0754
     - path: /etc/dylanmtaylor/refresh-content.sh
       contents:
