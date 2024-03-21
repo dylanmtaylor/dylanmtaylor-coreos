@@ -33,7 +33,7 @@ storage:
           #!/usr/bin/bash
           echo "Performing system customization in 5 seconds ..."
           sleep 5
-          echo "Installing docker compose plugin and setting up containers"
+          echo "Installing docker compose plugin and setting up containers" \
             && mkdir -p /usr/local/lib/docker/cli-plugins \
             && curl -SL https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose \
             && chmod +x /usr/local/lib/docker/cli-plugins/docker-compose \
@@ -60,7 +60,7 @@ storage:
             && rpm-ostree install unzip vim htop lshw neofetch nmap rclone restic texlive-xetex texlive-collection-fontsrecommended texlive-collection-fontutils \
             && systemctl enable refresh-content.timer \
             && touch /etc/dylanmtaylor/.complete
-          systemctl reboot
+            && systemctl reboot
       mode: 0754
     - path: /etc/dylanmtaylor/refresh-content.sh
       contents:
