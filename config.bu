@@ -2,12 +2,6 @@ variant: fcos
 version: 1.4.0
 passwd:
   users:
-    - name: dylan
-      ssh_authorized_keys:
-        - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF0rSUil4ks6LmTGDCZ43xg7kBV82lo+cgPY1lepvGZc Dylan M. Taylor
-      password_hash: $y$j9T$2hKRY3QJzIYgHb1G9p/FG1$2guy6HqSiWzKafGp8tlftiB5cc0GLn8e8kbArddUxa7
-      groups:
-        - wheel
     - name: core
       ssh_authorized_keys:
         - ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIF0rSUil4ks6LmTGDCZ43xg7kBV82lo+cgPY1lepvGZc Dylan M. Taylor
