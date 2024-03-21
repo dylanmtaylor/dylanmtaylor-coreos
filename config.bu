@@ -64,6 +64,15 @@ storage:
           sleep 15 # Allow manual intervention
           systemctl reboot
       mode: 0754
+    - path: /etc/dylanmtaylor/dylan-resume-builder-dockerfile
+      contents:
+        inline: |
+          FROM ubuntu:22.04
+          ENV DEBIAN_FRONTEND=noninteractive
+          RUN apt-get update
+          RUN apt-get install -y texlive-xetex texlive-fonts-recommended texlive-font-utils
+          CMD ["xelatex","--output-directory=/destination", "/source/dylan-resume.tex"]
+      mode: 0754
     - path: /etc/dylanmtaylor/refresh-content.sh
       contents:
         inline: |
