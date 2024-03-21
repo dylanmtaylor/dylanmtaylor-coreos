@@ -79,6 +79,7 @@ storage:
       contents:
         inline: |
           #!/usr/bin/bash
+          systemctl enable --now docker # Just in case; sometimes it isn't started when this runs. This should be a blocking call.
           curl -Lo /tmp/site.zip https://gitlab.com/dylanmtaylor/dylanmtaylor.gitlab.io/-/jobs/artifacts/master/download?job=pages
           rm -rf /tmp/site
           unzip -o /tmp/site.zip -d /tmp/site
