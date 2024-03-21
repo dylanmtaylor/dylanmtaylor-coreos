@@ -12,7 +12,6 @@ storage:
       mode: 0754
   files:
     - path: /etc/sysctl.d/80-swappiness.conf
-      filesystem: root
       contents:
         inline: "vm.swappiness=10"
     - path: /etc/ucore-autorebase/ucore-autorebase.sh
