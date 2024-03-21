@@ -64,8 +64,16 @@ storage:
       contents:
         inline: |
           #!/usr/bin/bash
-          curl -Lo /tmp/pages.zip https://gitlab.com/dylanmtaylor/dylanmtaylor.gitlab.io/-/jobs/artifacts/master/download?job=pages
-          echo TODO
+          curl -Lo /tmp/site.zip https://gitlab.com/dylanmtaylor/dylanmtaylor.gitlab.io/-/jobs/artifacts/master/download?job=pages
+          rm -rf /tmp/site
+          unzip -o /tmp/site.zip -d /tmp/site
+          rsync -avzh /tmp/site/ /var/www/dylanmtaylor.com/html/ --delete
+          docker exec -it fwc-dylanmtaylor-com /usr/bin/git pull
+          docker exec -it apps-dylanmtaylor-com /usr/bin/git pull
+          rm -rf /etc/dylan-resume-source
+          git clone https://gitlab.com/dylanmtaylor/Dylan-Resume.git /etc/dylan-resume-source && cd /root/Dylan-Resume && git checkout HEAD && git pull origin HEAD
+          cd /etc/dylan-resume-source
+          bash docker-resume-builder.sh
       mode: 0754
     - path: /etc/dylanmtaylor/docker-compose.yml
       mode: 0754
