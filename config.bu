@@ -152,6 +152,8 @@ storage:
                 DEFAULT_HOST: 'dylanmtaylor.com'
               volumes:
                 - /var/run/docker.sock:/tmp/docker.sock:ro
+              security_opt:
+                - label=disable
 systemd:
   units:
     - name: ucore-autorebase.service
