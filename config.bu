@@ -52,6 +52,7 @@ storage:
           # Containers
           systemctl enable --now docker
           docker compose -f /etc/dylanmtaylor/docker-compose.yml up --detach
+          sudo systemctl enable --now refesh-content.timer
           touch /etc/dylanmtaylor/.complete
       mode: 0754
     - path: /etc/dylanmtaylor/refresh-content.sh
@@ -195,7 +196,7 @@ systemd:
         Description=Refresh site content
         [Service]
         Type=oneshot
-        ExecStart=/bin/echo
+        ExecStart=/usr/bin/bash -c 'echo "Refreshing"; bash /etc/dylanmtaylor/refresh-content.sh; echo "Refresh complete".'
         [Install]
         WantedBy=multi-user.target
     - name: refresh-content.timer
@@ -205,7 +206,7 @@ systemd:
         Description=Refresh site content
         [Timer]
         OnUnitActiveSec=15m
-        OnBootSec=15m
+        OnBootSec=1m
         Persistent=true
         [Install]
         WantedBy=timers.target
