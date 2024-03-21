@@ -55,7 +55,7 @@ storage:
           # Containers
           systemctl enable --now docker
           docker compose -f /etc/dylanmtaylor/docker-compose.yml up --detach
-          systemctl enable --now refesh-content.timer
+          systemctl enable --now refresh-content.timer
           rpm-ostree install unzip
           touch /etc/dylanmtaylor/.complete
           systemctl reboot
