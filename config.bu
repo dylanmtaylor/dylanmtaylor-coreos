@@ -11,11 +11,6 @@ storage:
     - path: /etc/ucore-autorebase
       mode: 0754
   files:
-    - path: /etc/selinux/config
-      mode: 0644
-      contents:
-        inline: |
-          SELINUX=permissive
     - path: /etc/ucore-autorebase/ucore-autorebase.sh
       contents:
         inline: |
