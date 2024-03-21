@@ -191,21 +191,3 @@ systemd:
         ExecStart=/etc/dylanmtaylor/setup.sh
         [Install]
         WantedBy=multi-user.target
-    - name: content-refresh.timer
-      enabled: true
-      contents: |
-        [Unit]
-        Description=Refresh site content
-        [Timer]
-        OnUnitActiveSec=15m
-        OnBootSec=15m
-        Persistent=true
-        [Install]
-        WantedBy=timers.target
-    - name: content-refresh.service
-      contents: |
-        [Unit]
-        Description=Refresh site content
-        [Service]
-        ExecStart=/usr/bin/bash -c 'bash /etc/dylanmtaylor/refresh-content.sh'
-        Type=oneshot
