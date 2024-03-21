@@ -50,7 +50,7 @@ storage:
           curl -o /etc/nginx/sites-available/files.dylanmtaylor.com.conf https://raw.githubusercontent.com/dylanmtaylor/dylanmtaylor-coreos/main/nginx/sites/files.dylanmtaylor.com.conf
           find /etc/nginx/sites-available/ -name '*.conf' -type f -exec ln -s {} /etc/nginx/sites-enabled/ \;
           systemctl enable --now docker
-          docker compose -f /etc/dylanmtaylor/docker-compose.yml up
+          docker compose -f /etc/dylanmtaylor/docker-compose.yml up --detach
           touch /etc/dylanmtaylor/.complete
       mode: 0754
     - path: /etc/dylanmtaylor/docker-compose.yml
