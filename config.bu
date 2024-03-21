@@ -37,8 +37,8 @@ storage:
           chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
           echo "Setting up dylanmtaylor websites ..."
           # Nginx structure
-          mkdir -p /etc/dylan-resume-source
-          chmod 0755 /etc/dylan-resume-source
+          mkdir -p /etc/dylanmtaylor/resume
+          chmod 0755 /etc/dylanmtaylor/resume
           mkdir -p /var/www/dylanmtaylor.com/html
           chmod 0755 /var/www/dylanmtaylor.com/html
           mkdir -p /var/www/files.dylanmtaylor.com/html
@@ -69,12 +69,12 @@ storage:
           curl -Lo /tmp/site.zip https://gitlab.com/dylanmtaylor/dylanmtaylor.gitlab.io/-/jobs/artifacts/master/download?job=pages
           rm -rf /tmp/site
           unzip -o /tmp/site.zip -d /tmp/site
-          rsync -avzh /tmp/site/ /var/www/dylanmtaylor.com/html/ --delete
+          rsync -rvh /tmp/site/ /var/www/dylanmtaylor.com/html/ --delete
           docker exec -it fwc-dylanmtaylor-com /usr/bin/git pull
           docker exec -it apps-dylanmtaylor-com /usr/bin/git pull
-          rm -rf /etc/dylan-resume-source
-          git clone https://gitlab.com/dylanmtaylor/Dylan-Resume.git /etc/dylan-resume-source && cd /etc/dylan-resume-source && git checkout HEAD && git pull origin HEAD
-          cd /etc/dylan-resume-source
+          rm -rf /etc/dylanmtaylor/resume
+          git clone https://gitlab.com/dylanmtaylor/Dylan-Resume.git /etc/dylanmtaylor/resume && cd /etc/dylanmtaylor/resume && git checkout HEAD && git pull origin HEAD
+          cd /etc/dylanmtaylor/resume
           bash docker-resume-builder.sh
       mode: 0754
     - path: /etc/dylanmtaylor/docker-compose.yml
@@ -155,7 +155,7 @@ storage:
               stdin_open: true
               tty: true
               volumes:
-                - /etc/dylan-resume-source:/source:ro,z
+                - /etc/dylanmtaylor/resume:/source:ro,z
                 - /var/www/files.dylanmtaylor.com/html:/destination:z
           
             nginx-proxy:
