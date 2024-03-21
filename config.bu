@@ -57,6 +57,7 @@ storage:
           systemctl enable --now docker
           docker compose -f /etc/dylanmtaylor/docker-compose.yml up --detach
           systemctl enable --now cockpit.service
+          setsebool -P rsync_full_access 1
           rpm-ostree install unzip vim htop lshw neofetch nmap rclone restic
           systemctl enable refresh-content.timer
           touch /etc/dylanmtaylor/.complete
