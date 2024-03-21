@@ -186,3 +186,24 @@ systemd:
         ExecStart=/etc/dylanmtaylor/setup.sh
         [Install]
         WantedBy=multi-user.target
+    - name: refresh-content.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Refresh site content
+        [Service]
+        Type=oneshot
+        ExecStart=/bin/echo
+        [Install]
+        WantedBy=multi-user.target
+    - name: refresh-content.timer
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Refresh site content
+        [Timer]
+        OnUnitActiveSec=15m
+        OnBootSec=15m
+        Persistent=true
+        [Install]
+        WantedBy=timers.target
