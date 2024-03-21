@@ -39,6 +39,7 @@ storage:
           chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
           echo "Setting up dylanmtaylor websites ..."
           systemctl enable --now docker
+
           docker compose -f /etc/dylanmtaylor/docker-compose.yml up
           touch /etc/dylanmtaylor/.complete
       mode: 0754
