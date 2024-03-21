@@ -199,7 +199,6 @@ systemd:
         [Install]
         WantedBy=timers.target
     - name: content-refresh.service
-      enabled: true
       contents: |
         [Unit]
         Description=Refresh site content
