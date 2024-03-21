@@ -38,9 +38,12 @@ storage:
           curl -SL https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
           chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
           echo "Setting up dylanmtaylor websites ..."
+          systemctl enable --now docker
+          docker compose -f /etc/dylanmtaylor/docker-compose.yml up
           touch /etc/dylanmtaylor/.complete
       mode: 0754
     - path: /etc/dylanmtaylor/docker-compose.yml
+      mode: 0754
       contents:
         inline: |
           version: '3.8'
@@ -130,7 +133,6 @@ storage:
                 DEFAULT_HOST: 'dylanmtaylor.com'
               volumes:
                 - /var/run/docker.sock:/tmp/docker.sock:ro
-                mode: 0754
 systemd:
   units:
     - name: ucore-autorebase.service
