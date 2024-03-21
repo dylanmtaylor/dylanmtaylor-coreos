@@ -21,6 +21,7 @@ storage:
             && touch /etc/ucore-autorebase/.complete \
             && systemctl disable ucore-autorebase.service \
             && systemctl enable dylanmtaylor-setup.service \
+            && echo "SELINUX=permissive" > /etc/selinux/config \
             && systemctl reboot
       mode: 0754
     - path: /etc/dylanmtaylor/setup.sh
