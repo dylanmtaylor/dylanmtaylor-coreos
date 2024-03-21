@@ -88,7 +88,7 @@ storage:
           rm -rf /etc/dylanmtaylor/resume
           git clone https://gitlab.com/dylanmtaylor/Dylan-Resume.git /etc/dylanmtaylor/resume && cd /etc/dylanmtaylor/resume && git checkout HEAD && git pull origin HEAD
           docker build /etc/dylanmtaylor/ -t resume-builder:latest -f /etc/dylanmtaylor/dylan-resume-builder-dockerfile
-          docker run -v /etc/dylanmtaylor/resume/:/source:z -v /var/www/files.dylanmtaylor.com/html/:/destination:z -it resume-builder:latest
+          docker run -v /etc/dylanmtaylor/resume/:/source:z -v /var/www/files.dylanmtaylor.com/html/:/destination:z resume-builder:latest
           ls -lah /var/www/files.dylanmtaylor.com/html
       mode: 0754
     - path: /etc/dylanmtaylor/docker-compose.yml
