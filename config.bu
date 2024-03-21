@@ -58,7 +58,7 @@ storage:
             && docker compose -f /etc/dylanmtaylor/docker-compose.yml up --detach \
             && systemctl enable --now cockpit.service \
             && setsebool -P rsync_full_access 1 \
-            && rpm-ostree install unzip vim htop lshw neofetch nmap rclone restic texlive texlive-xetex texlive-collection-fontsrecommended texlive-collection-fontutils texlive-collection-formatsextra texinfo-tex \
+            && rpm-ostree install unzip vim htop lshw neofetch nmap rclone restic texlive texlive-latex texlive-xetex texlive-xetex-def texlive-collection-fontsrecommended texlive-collection-fontutils texlive-collection-latex texlive-collection-latexrecommended texlive-xetex-def texlive-collection-xetex \
             && systemctl enable refresh-content.timer \
             && touch /etc/dylanmtaylor/.complete
           sleep 15 # Allow manual intervention
