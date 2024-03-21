@@ -3,8 +3,8 @@ on:
   push:
     branches: [ main ]
 jobs:
-  container-test-job:
+  ignition:
     runs-on: ubuntu-latest
     steps:
       - name: Generate ignition file
-        run: docker run --interactive --rm quay.io/coreos/butane:release --pretty --strict < config.bu > config.ign
+        run: docker run --interactive --rm quay.io/coreos/butane:release --pretty --strict < ${GITHUB_WORKSPACE}/config.bu
