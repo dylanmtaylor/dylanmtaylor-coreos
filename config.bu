@@ -33,6 +33,7 @@ storage:
           curl -SL https://github.com/docker/compose/releases/download/v2.25.0/docker-compose-linux-x86_64 -o /usr/local/lib/docker/cli-plugins/docker-compose
           chmod +x /usr/local/lib/docker/cli-plugins/docker-compose
           echo "Setting up dylanmtaylor websites ..."
+          # Nginx structure
           mkdir -p /etc/dylan-resume-source
           chmod 0755 /etc/dylan-resume-source
           mkdir -p /var/www/dylanmtaylor.com/html
@@ -49,9 +50,17 @@ storage:
           curl -o /etc/nginx/sites-available/dylanmtaylor.com.conf https://raw.githubusercontent.com/dylanmtaylor/dylanmtaylor-coreos/main/nginx/sites/dylanmtaylor.com.conf
           curl -o /etc/nginx/sites-available/files.dylanmtaylor.com.conf https://raw.githubusercontent.com/dylanmtaylor/dylanmtaylor-coreos/main/nginx/sites/files.dylanmtaylor.com.conf
           find /etc/nginx/sites-available/ -name '*.conf' -type f -exec ln -s {} /etc/nginx/sites-enabled/ \;
+          # Containers
           systemctl enable --now docker
           docker compose -f /etc/dylanmtaylor/docker-compose.yml up --detach
           touch /etc/dylanmtaylor/.complete
+      mode: 0754
+    - path: /etc/dylanmtaylor/refresh-content.sh
+      contents:
+        inline: |
+          #!/usr/bin/bash
+          curl -Lo /tmp/pages.zip https://gitlab.com/dylanmtaylor/dylanmtaylor.gitlab.io/-/jobs/artifacts/master/download?job=pages
+          echo TODO
       mode: 0754
     - path: /etc/dylanmtaylor/docker-compose.yml
       mode: 0754
