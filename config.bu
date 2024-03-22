@@ -55,6 +55,7 @@ storage:
             && curl -Lo /etc/nginx/sites-available/files.dylanmtaylor.com.conf https://raw.githubusercontent.com/dylanmtaylor/dylanmtaylor-coreos/main/nginx/sites/files.dylanmtaylor.com.conf \
             && find /etc/nginx/sites-available/ -name '*.conf' -type f -exec ln -s {} /etc/nginx/sites-enabled/ \; \
             && systemctl enable --now docker \
+            && usermod -aG docker core
             && curl -Lo /etc/dylanmtaylor/docker-compose.yml https://raw.githubusercontent.com/dylanmtaylor/dylanmtaylor-coreos/main/docker-compose.yml \
             && docker compose -f /etc/dylanmtaylor/docker-compose.yml up --detach \
             && systemctl enable --now cockpit.service \
