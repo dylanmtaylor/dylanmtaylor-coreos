@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  www-dylanmtaylor-com:
+    image: richarvey/nginx-php-fpm:3.1.6
+    container_name: www-dylanmtaylor-com
+    restart: always
+    environment:
+      VIRTUAL_HOST: 'www.dylanmtaylor.com,dylanmtaylor.com,dylanmtaylor.local,localhost'
+    volumes:
+      - /var/www/files.dylanmtaylor.com/html/:/var/www/files.dylanmtaylor.com/html/:ro,z
+      - /var/www/dylanmtaylor.com/html/public/:/var/www/html/:ro,z
+      - /var/www/errors/404.html:/var/www/errors/404.html:ro,z
+
+  apps-dylanmtaylor-com:
+    image: richarvey/nginx-php-fpm:3.1.6
+    container_name: apps-dylanmtaylor-com
+    restart: always
+    environment:
+      GIT_NAME: "Dylan M. Taylor"
+      GIT_EMAIL: "dylan@dylanmtaylor.com"
+      GIT_REPO: https://gitlab.com/dylanmtaylor/apps-dylanmtaylor-com.git
+      VIRTUAL_HOST: 'apps.dylanmtaylor.com,apps.dylanmtaylor.local'
+    volumes:
+      - /var/www/errors/404.html:/var/www/errors/404.html:ro,z
+
+  fwc-dylanmtaylor-com:
+    image: richarvey/nginx-php-fpm:3.1.6
+    container_name: fwc-dylanmtaylor-com
+    restart: always
+    environment:
+      GIT_NAME: "Dylan M. Taylor"
+      GIT_EMAIL: "dylan@dylanmtaylor.com"
+      GIT_REPO: https://gitlab.com/dylanmtaylor/fwc-dylanmtaylor-com.git
+      VIRTUAL_HOST: 'fwc.dylanmtaylor.com,fwc.dylanmtaylor.local'
+    volumes:
+      - /var/www/errors/404.html:/var/www/errors/404.html:ro,z
+
+  files-dylanmtaylor-com:
+    image: nginx:alpine
+    container_name: files-dylanmtaylor-com
+    restart: always
+    environment:
+      VIRTUAL_HOST: 'files.dylanmtaylor.com,files.dylanmtaylor.local'
+    volumes:
+      - /var/www/files.dylanmtaylor.com/html/:/usr/share/nginx/html:ro,z
+
+  git-dylanmtaylor-com:
+    image: ajoergensen/web-redirect:latest
+    container_name: git-dylanmtaylor-com
+    restart: always
+    environment:
+      VIRTUAL_HOST: 'git.dylanmtaylor.com,git.dylanmtaylor.local'
+      REDIRECT_SCHEME: 'https'
+      REDIRECT_TARGET: 'gitlab.com'
+      REDIRECT_PATH: '/dylanmtaylor'
+
+  blog-dylanmtaylor-com:
+    image: ajoergensen/web-redirect:latest
+    container_name: blog-dylanmtaylor-com
+    restart: always
+    environment:
+      VIRTUAL_HOST: 'blog.dylanmtaylor.com,blog.dylanmtaylor.local'
+      REDIRECT_SCHEME: 'https'
+      REDIRECT_TARGET: 'dylanmtaylor.com'
+      REDIRECT_PATH: '/blog'
+
+  nginx-proxy:
+    image: jwilder/nginx-proxy:alpine
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      - "80:80"
+    environment:
+      DEFAULT_HOST: 'dylanmtaylor.com'
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+    security_opt:
+      - label=disable
